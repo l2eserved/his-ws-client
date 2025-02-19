@@ -1,0 +1,22 @@
+{
+  "name": "one_his_client",
+  "version": "1.0.0",
+  "description": "For apply his data to ws server. Devby Theerapong Pakham",
+  "main": "start.js",
+  "type": "module",
+  "scripts": {
+    "test": "node token.js ",
+    "start": "node start.js"
+  },
+  "author": "Theerapong Pakham",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "firebase": "^11.3.1",
+    "firebase-admin": "^13.1.0",
+    "iconv-lite": "^0.6.3",
+    "mysql2": "^3.12.0",
+    "url": "^0.11.4",
+    "ws": "^8.18.0"
+  }
+}
