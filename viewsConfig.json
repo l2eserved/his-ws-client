@@ -1,0 +1,20 @@
+[
+    {
+        "viewname": "onep_labourbyan",
+        "sqlfile":  "queries/onep_labourbyan.sql" ,
+        "run_on_startup": true,
+        "inject_flage" : true
+    },
+    {
+        "viewname": "onep_labourbyan_inj",
+        "sqlfile":  "queries/onep_labourbyan_inj.sql" ,
+        "run_on_startup": false,
+		"inject_flage" : true
+    },
+    {
+        "viewname": "onep_test",
+        "sqlfile": "",
+        "run_on_startup": false,
+        "inject_flage" : false
+    }
+]
