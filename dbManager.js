@@ -11,8 +11,32 @@ const dbConfig = {
     port: process.env.dbport,
     user: process.env.dbuser,
     password: process.env.dbpass,
-    database: process.env.dbname
+    database: process.env.dbname,
+    timezone: "+07:00"
 };
+
+
+async function fetchAllStoredProcedures() {
+    let connection;
+    try {
+        connection = await mysql.createConnection(dbConfig);
+        await connection.query("SET NAMES utf8");
+
+        const query = "SELECT ROUTINE_NAME FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE' AND ROUTINE_NAME LIKE 'onep_%'";
+        //const query = "SELECT * from ovst limit 1";
+        const [rows] = await connection.execute(query);
+        console.log(JSON.stringify(rows));
+        return rows.map(row => row.ROUTINE_NAME); // คืนชื่อ Stored Procedures เป็น Array
+    } catch (error) {
+        console.error(`[❌] Error fetching stored procedures: ${error.message}`);
+        return [];
+    } finally {
+        if (connection) await connection.end();
+    }
+}
+
+
+
 
 // ✅ ฟังก์ชันดึงข้อมูลจาก View
 async function fetchViewData(viewName, params = {}) {
@@ -46,6 +70,37 @@ async function fetchViewData(viewName, params = {}) {
     }
 }
 
+async function fetchProducerData(sqlQuery,params=['','']) {
+    let connection;
+    try {
+        connection = await mysql.createConnection(dbConfig);
+        await connection.query("SET NAMES utf8");
+        console.log(`[📝] Executing Produce`);
+        
+        // ✅ ถ้าค่า params เป็น object → แปลงเป็น array
+        if (typeof params === "object" && params !== null && !Array.isArray(params)) {
+            params = Object.values(params);
+        }
+
+        // ✅ ถ้า params เป็น array ซ้อน array → Flatten ให้เหลือแค่ array ธรรมดา
+        if (Array.isArray(params) && params.length === 1 && Array.isArray(params[0])) {
+            params = params[0];
+        }
+
+        // ✅ ถ้า params ไม่ใช่ array ให้ตั้งค่าเป็นค่า default
+        if (!Array.isArray(params)) {
+            params = ['', ''];
+        }
+        //console.log(params);
+        const [rows] = await connection.execute(sqlQuery, params);
+        return rows[0];
+    } catch (error) {
+        console.error(`[❌] Database Error (Query): ${error.message}`);
+        return [];
+    } finally {
+        if (connection) await connection.end();
+    }
+}
 
 // ✅ ฟังก์ชันรัน SQL query ที่กำหนดเอง
 async function fetchQueryData(sqlQuery) {
@@ -53,10 +108,10 @@ async function fetchQueryData(sqlQuery) {
     try {
         connection = await mysql.createConnection(dbConfig);
         await connection.query("SET NAMES utf8");
-
+        //console.log(`[📝] Executing custom SQL query`,sqlQuery);
         console.log(`[📝] Executing custom SQL query`);
         const [rows] = await connection.execute(sqlQuery); // ✅ รัน query ตรงๆ
-
+        //console.log(`[📝] Executing custom SQL query`,JSON.stringify(rows));
         return rows;
     } catch (error) {
         console.error(`[❌] Database Error (Query): ${error.message}`);
@@ -75,7 +130,7 @@ async function fetchAllViewNames() {
 
         const query = "SELECT TABLE_NAME FROM information_schema.VIEWS WHERE TABLE_NAME LIKE 'onep_%'";
         const [rows] = await connection.execute(query);
-
+    console.log(JSON.stringify(rows));
         return rows.map(row => row.TABLE_NAME); // คืนชื่อ Views เป็น Array
     } catch (error) {
         console.error(`[❌] Error fetching view names: ${error.message}`);
@@ -97,5 +152,5 @@ async function loadAllowedViews() {
     }
 }
 
-export { fetchViewData, fetchAllViewNames,fetchQueryData};
+export { fetchViewData, fetchAllViewNames,fetchQueryData,fetchAllStoredProcedures,fetchProducerData};
 
