@@ -1,0 +1,1 @@
+pm2 delete oneclient & pm2 start client.js --name oneclient & pm2 startup & pm2 save

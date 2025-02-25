@@ -1,0 +1,25 @@
+BEGIN
+    IF d1 IS NULL or d1 = '' THEN SET d1 = DATE_SUB(CURDATE(),INTERVAL 60 DAY); END IF;
+    IF d2 IS NULL or d2 = '' THEN SET d2 = CURDATE(); END IF;
+SELECT o.vstdate
+,LEFT(SEC_TO_TIME(AVG((TIME_TO_SEC(s.service4)-TIME_TO_SEC(o.vsttime)))),5) AS "visit_screen"
+,LEFT(SEC_TO_TIME(AVG((TIME_TO_SEC(s.service11)-TIME_TO_SEC(s.service4)))),5) AS "avg_screen"
+,LEFT(SEC_TO_TIME(AVG((TIME_TO_SEC(s.service5)-TIME_TO_SEC(s.service11)))),5) AS "screen_doctor"
+,LEFT(SEC_TO_TIME(AVG((TIME_TO_SEC(s.service12)-TIME_TO_SEC(s.service5)))),5) AS "avg_doctor"
+,LEFT(SEC_TO_TIME(AVG((TIME_TO_SEC(s.service6)-TIME_TO_SEC(s.service12)))),5) AS "doctor_pharma"
+,LEFT(SEC_TO_TIME(AVG((TIME_TO_SEC(s.service16)-TIME_TO_SEC(s.service6)))),5) AS "avg_pharma"
+,LEFT(SEC_TO_TIME(AVG((TIME_TO_SEC(s.service6)-TIME_TO_SEC(o.vsttime)))),5) AS "avg_visit_pharma"
+FROM service_time s
+INNER JOIN ovst o ON o.vn=s.vn
+LEFT JOIN oapp on o.hn = oapp.hn AND o.vstdate = oapp.nextdate
+WHERE s.vstdate BETWEEN d1 AND d2
+AND o.vstdate NOT IN (SELECT DISTINCT holiday_date FROM holiday WHERE holiday_date BETWEEN d1
+AND d2)
+AND o.vsttime BETWEEN "08:30:00" and "16:30:00"
+AND oapp.vn IS NULL
+AND o.main_dep IN (
+SELECT depcode FROM kskdepartment
+WHERE department LIKE "%ซักประวัติ%"
+)
+GROUP BY o.vstdate;
+END

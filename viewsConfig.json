@@ -1,76 +1,58 @@
 [
     {
         "viewname": "onep_cmi",
-        "cmd":  "CALL onep_cmi(?,?)" ,
+        "cmd":  "CALL onep_cmi(?,?)",
         "run_on_startup": true,
         "is_produce" : true,
         "stack_record" : false
     },
     {
         "viewname": "onep_cmilist",
-        "cmd":  "CALL onep_cmilist(?,?)" ,
+        "cmd":  "CALL onep_cmilist(?,?)",
         "run_on_startup": true,
         "is_produce" : true,
         "stack_record" : true
     },
     {
         "viewname": "onep_labourbyan",
-        "cmd":  "CALL onep_labourbyan(?)" ,
+        "cmd":  "CALL onep_labourbyan(?)",
         "run_on_startup": false,
         "is_produce" : true,
         "stack_record" : true
     },
     {
         "viewname": "onep_labourbytype",
-        "cmd":  "CALL onep_labourbytype(?)" ,
+        "cmd":  "CALL onep_labourbytype(?)",
         "run_on_startup": true,
         "is_produce" : true,
         "stack_record" : true
     },
     {
         "viewname": "onep_waitingtimelist",
-        "cmd":  "CALL onep_waitingtimelist(?,?)" ,
+        "cmd":  "CALL onep_waitingtimelist(?,?)",
         "run_on_startup": true,
         "is_produce" : true,
         "stack_record" : true
     },
     {
         "viewname": "onep_waittingtime",
-        "cmd":  "CALL onep_waittingtime(?,?)" ,
+        "cmd":  "CALL onep_waittingtime(?,?)",
         "run_on_startup": true,
         "is_produce" : true,
         "stack_record" : false
     },
     {
-        "viewname": "onep_labourbyan",
-        "sqlfile":  "queries/onep_labourbyan.sql" ,
-        "run_on_startup": false,
-        "inject_flage" : true,
-        "is_produce" : false,
-        "stack_record" : true
+        "viewname": "onep_opdvisit",
+        "cmd":  "CALL onep_opdvisit(?)",
+        "run_on_startup": true,
+        "is_produce" : true,
+        "stack_record" : false
     },
     {
-        "viewname": "onep_labourbyan_inj",
-        "sqlfile":  "queries/onep_labourbyan_inj.sql" ,
-        "run_on_startup": false,
-		"inject_flage" : true,
-        "is_produce" : false,
-        "stack_record" : true
-    },
-    {
-        "viewname": "onep_test",
-        "sqlfile": "queries/onep_test.sql",
-        "run_on_startup": false,
-        "inject_flage" : true,
-        "is_produce" : false,
-        "stack_record" : true
-    },
-    {
-        "viewname": "onep_test_inj",
-        "sqlfile": "queries/onep_test_inj.sql",
-        "run_on_startup": false,
-        "inject_flage" : true,
-        "is_produce" : false,
-        "stack_record" : true
+        "viewname": "onep_ipdvisit",
+        "cmd":  "CALL onep_ipdvisit(?)",
+        "run_on_startup": true,
+        "is_produce" : true,
+        "stack_record" : false
     }
 ]

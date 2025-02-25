@@ -1,0 +1,14 @@
+BEGIN
+IF d1 IS NULL or d1 = '' THEN SET d1 = date(CURDATE()); END IF;
+
+SELECT (SELECT hospitalcode FROM opdconfig) AS hcode
+, date(now()) AS date_get, ward.ward,ward.name AS ward_name
+, ward.spclty, spclty.name AS spclty_name,count(*) AS admit_num
+, bedcount, ward_active
+FROM ipt
+LEFT JOIN ward ON ward.ward = ipt.ward
+LEFT JOIN spclty ON spclty.spclty = ward.spclty
+WHERE dchdate IS NULL AND ward_active = "Y"
+GROUP BY ward.ward,ward.name,ward.spclty,spclty.name;
+
+END

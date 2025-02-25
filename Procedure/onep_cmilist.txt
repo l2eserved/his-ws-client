@@ -1,0 +1,13 @@
+BEGIN
+    IF d1 IS NULL or d1 = '' THEN SET d1 = DATE_SUB(CURDATE(),INTERVAL 30 DAY); END IF;
+    IF d2 IS NULL or d2 = '' THEN SET d2 = CURDATE(); END IF;
+  SELECT (SELECT hospitalcode FROM opdconfig) AS hospcode,i.ward AS ward, w.bedcount AS bedcount
+            ,w.`name` AS wname,i.an,i.admdate AS dayadm,a.dchdate
+            ,ROUND(i.rw,2) As Rw
+            ,ROUND(a.adjrw,2) As AdjRw
+            FROM an_stat i
+            LEFT OUTER JOIN ward w ON w.ward = i.ward
+            LEFT JOIN ipt a on a.an = i.an
+            WHERE i.dchdate BETWEEN d1 AND d2
+            AND w.bedcount IS NOT NULL;
+END

@@ -1,0 +1,56 @@
+BEGIN
+IF d1 IS NULL or d1 = '' THEN SET d1 = date(CURDATE()); END IF;
+    
+select a.type,a.n as opd,b.n as er 
+from 
+(select "total" as type,count(s.vn) as n from ovst  
+INNER JOIN service_time s on ovst.vn = s.vn
+WHERE ovst.vstdate = CURRENT_DATE
+and ovst.vn  not in (select vn from er_regist where vstdate = d1)
+UNION
+select "waiting" as type,count(s.vn) as n from ovst
+INNER JOIN service_time s on ovst.vn = s.vn
+WHERE ovst.vstdate = CURRENT_DATE
+and s.service5 is null
+and ovst.vn  not in (select vn from er_regist where vstdate = d1)
+UNION
+select "inprocess" as type,count(s.vn) as n from ovst
+INNER JOIN service_time s on ovst.vn = s.vn
+WHERE ovst.vstdate = CURRENT_DATE
+ and s.service5 is not null 
+ and s.service12 is null
+ and ovst.vn  not in (select vn from er_regist where vstdate = d1)
+ UNION
+ select "success" as type,count(s.vn) as n from ovst
+INNER JOIN service_time s on ovst.vn = s.vn
+WHERE ovst.vstdate = CURRENT_DATE
+and s.service12 is not null
+and ovst.vn not in (select vn from er_regist where vstdate = d1)) as a
+-- ////ER////
+LEFT JOIN (   
+select "total" as type,count(s.vn) as n from ovst
+INNER JOIN service_time s on ovst.vn = s.vn
+WHERE ovst.vstdate = CURRENT_DATE
+and ovst.vn   in (select vn from er_regist where vstdate = d1)
+UNION
+select "waiting" as type,count(s.vn) as n from ovst
+INNER JOIN service_time s on ovst.vn = s.vn
+WHERE ovst.vstdate = CURRENT_DATE
+and s.service5 is null
+and ovst.vn   in (select vn from er_regist where vstdate = d1)
+UNION
+select "inprocess" as type,count(s.vn) as n from ovst
+INNER JOIN service_time s on ovst.vn = s.vn
+WHERE ovst.vstdate = CURRENT_DATE
+ and s.service5 is not null 
+ and s.service12 is null
+ and ovst.vn   in (select vn from er_regist where vstdate = d1)
+ UNION
+ select "success" as type,count(s.vn) as n from ovst
+INNER JOIN service_time s on ovst.vn = s.vn
+WHERE ovst.vstdate = CURRENT_DATE
+and s.service12 is not null
+and ovst.vn  in (select vn from er_regist where vstdate = d1)
+) as b on a.type = b.type;
+
+END

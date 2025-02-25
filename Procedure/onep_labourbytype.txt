@@ -1,0 +1,12 @@
+BEGIN
+    IF xlabour_type IS NULL or xlabour_type = '' THEN SET xlabour_type = 2; END IF;
+   
+            SELECT pr.deliver_type,dt.name,ip.an,CONCAT(pt.pname,pt.fname," ",pt.lname) AS ptname,t.full_name,pr.preg_number
+            FROM ipt ip
+            LEFT OUTER JOIN ipt_pregnancy pr ON ip.an = pr.an
+            LEFT OUTER JOIN ipt_pregnancy_deliver_type dt ON pr.deliver_type = dt.id
+            LEFT OUTER JOIN labour_deliver_abnormal_type la ON pr.deliver_abnormal_type = la.labour_deliver_abnormal_type
+            LEFT OUTER JOIN patient pt ON ip.hn = pt.hn
+            LEFT OUTER JOIN thaiaddress t ON CONCAT(pt.chwpart,pt.amppart,pt.tmbpart) = t.addressid
+            WHERE ip.dchdate IS NULL AND ip.ipt_type = 4 AND dt.id = xlabour_type;
+END
