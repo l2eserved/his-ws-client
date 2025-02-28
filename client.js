@@ -88,6 +88,22 @@ function generateParams(sql, params = []) {
     return filledParams;
 }
 
+function keepAlive() {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ action: "keep_alive" }));
+        console.log("[🔄] Sent Keep Alive message.");
+    }
+    setTimeout(keepAlive, 30000); // เรียกทุก 30 วินาที
+}
+
+
+function register() {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ action: "register" }));
+        console.log("[🔄] Sent Keep Register message.");
+    }
+}
+
 async function connectWebSocket(token) {
     if (isConnecting) {
         console.log('[⚠] WebSocket is already connecting...');
@@ -106,7 +122,8 @@ async function connectWebSocket(token) {
 
     socket.onopen = async () => {
         console.log('[✅] WebSocket connected');
-
+        keepAlive();
+        register();
         for (const view of viewsConfig) {
             if (view.run_on_startup && !view.is_produce) {
                 console.log(`[🔄] Running startup sync for view: ${view.viewname}`);
@@ -164,15 +181,9 @@ async function connectWebSocket(token) {
             views: views
         }));
 
-        socket.send(JSON.stringify({
+        /*socket.send(JSON.stringify({
             action: 'sync_all'
-        }));
-
-        socket.send(JSON.stringify({
-            action: 'register',
-            client_id: client_id, // ✅ ส่ง client_id ไปกับ Views
-            views: views
-        }));
+        }));      */
     };
 
 
@@ -361,6 +372,8 @@ async function connectWebSocket(token) {
             }
         } else if (response.action === 'broadcast') {
             console.log(`[🔄] Broadcast Message From Server IS ${JSON.stringify(response.message)}`);
+        } else if (response.action === 'keep_alive_ack') {
+            console.log(`[✅] keep_alive_ack Message From Server ${JSON.stringify(response.message)}`);
         } else if (response.action === 'run_sql') {
 
             console.log(`[📝] Running custom SQL for view: ${response.view}`);
