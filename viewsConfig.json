@@ -35,13 +35,6 @@
         "stack_record" : true
     },
     {
-        "viewname": "onep_waittingtime",
-        "cmd":  "CALL onep_waittingtime(?,?)",
-        "run_on_startup": true,
-        "is_produce" : true,
-        "stack_record" : false
-    },
-    {
         "viewname": "onep_opdvisit",
         "cmd":  "CALL onep_opdvisit(?)",
         "run_on_startup": true,

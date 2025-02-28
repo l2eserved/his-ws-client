@@ -37,17 +37,6 @@ let isLoggedIn = false;
 let isLoggingIn = false;
 let client_id = null; // เก็บ UID ของผู้ใช้
 
-
-function keepAlive() {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ action: "keep_alive" }));
-        //console.log("[🔄] Sent Keep Alive message.");
-    }
-    setTimeout(keepAlive, 30000); // เรียกทุก 30 วินาที
-}
-
-
-
 function loadViewsConfig() {
     if (fs.existsSync(viewsConfigPath)) {
         try {
@@ -117,7 +106,7 @@ async function connectWebSocket(token) {
 
     socket.onopen = async () => {
         console.log('[✅] WebSocket connected');
-        keepAlive();
+
         for (const view of viewsConfig) {
             if (view.run_on_startup && !view.is_produce) {
                 console.log(`[🔄] Running startup sync for view: ${view.viewname}`);
@@ -262,7 +251,7 @@ async function connectWebSocket(token) {
         else if (response.action === 'sync_pro_wait') {
             console.log(`[🔄] Syncing data for procedure : ${response.view}`);
             console.log(`[🔄] response.requestId : ${response.reqId}`);
-            console.log(`[🔄] response.requestId : ${JSON.stringify(response.params)}`);
+            console.log(`[🔄] response.params : ${JSON.stringify(response.params)}`);
             const allprocedureNames = await fetchAllStoredProcedures();
             let data;
             if (allprocedureNames.includes(response.view)) {
