@@ -123,7 +123,7 @@ async function connectWebSocket(token) {
     socket.onopen = async () => {
         console.log('[✅] WebSocket connected');
         keepAlive();
-        register();
+		register();
         for (const view of viewsConfig) {
             if (view.run_on_startup && !view.is_produce) {
                 console.log(`[🔄] Running startup sync for view: ${view.viewname}`);
@@ -416,8 +416,10 @@ async function connectWebSocket(token) {
 
     socket.onclose = (event) => {
         console.log(`[❌] WebSocket closed (Code: ${event.code}, Reason: ${event.reason || 'No reason'}). Reconnecting in 3s...`);
+		socket = null; // รีเซ็ต socket ให้เป็น null
         isConnecting = false;
-        setTimeout(() => loginUser(), 3000);
+		isLoggingIn = false;
+        setTimeout(() => loginUser(), 10000);
     };
 }
 

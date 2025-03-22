@@ -12,7 +12,8 @@ const dbConfig = {
     user: process.env.dbuser,
     password: process.env.dbpass,
     database: process.env.dbname,
-    timezone: "+07:00"
+    timezone: "+07:00", // ตั้งค่าเป็น Bangkok
+    dateStrings: true,  // ป้องกัน MySQL แปลง DATE/TIMESTAMP เป็น Object
 };
 
 
